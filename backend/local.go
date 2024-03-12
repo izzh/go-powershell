@@ -5,6 +5,7 @@ package backend
 import (
 	"io"
 	"os/exec"
+	"syscall"
 
 	"github.com/juju/errors"
 )
@@ -13,6 +14,7 @@ type Local struct{}
 
 func (b *Local) StartProcess(cmd string, args ...string) (Waiter, io.Writer, io.Reader, io.Reader, error) {
 	command := exec.Command(cmd, args...)
+	command.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
 	stdin, err := command.StdinPipe()
 	if err != nil {
